@@ -1,5 +1,5 @@
 ---
-description: 작업 생성 후 spec.md, plan.md 및 tasks.md 전반에 걸쳐 비파괴적 교차 산출물 일관성 및 품질 분석을 수행합니다.
+description: 작업 생성 후 spec.md, plan.md 및 tasks.md 전반에 걸쳐 비파괴적 교차 결과물 일관성 및 품질 분석을 수행합니다.
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
@@ -15,7 +15,7 @@ $ARGUMENTS
 
 ## 목표
 
-구현 전에 세 가지 핵심 산출물(`spec.md`, `plan.md`, `tasks.md`) 전반에 걸쳐 불일치, 중복, 모호성 및 명시되지 않은 항목을 식별합니다. 이 명령은 `/speckit.tasks`가 완전한 `tasks.md`를 성공적으로 생성한 후에만 실행되어야 합니다.
+구현 전에 세 가지 핵심 결과물(`spec.md`, `plan.md`, `tasks.md`) 전반에 걸쳐 불일치, 중복, 모호성 및 명시되지 않은 항목을 식별합니다. 이 명령은 `/speckit.tasks`가 완전한 `tasks.md`를 성공적으로 생성한 후에만 실행되어야 합니다.
 
 ## 운영 제약조건
 
@@ -36,9 +36,9 @@ $ARGUMENTS
 필요한 파일이 누락된 경우 오류 메시지와 함께 중단 (사용자에게 누락된 선행 조건 명령 실행 지시).
 'I'm Groot'와 같은 인수의 단일 따옴표는 이스케이프 구문 사용: 예: 'I'\''m Groot' (또는 가능하면 큰따옴표: "I'm Groot").
 
-### 2. 산출물 로드
+### 2. 결과물 로드
 
-각 산출물에서 필요한 최소한의 컨텍스트만 로드:
+각 결과물에서 필요한 최소한의 컨텍스트만 로드:
 
 **spec.md에서:**
 
@@ -69,7 +69,7 @@ $ARGUMENTS
 
 ### 3. 의미론적 모델 구축
 
-내부 표현 생성 (출력에 원시 산출물 포함하지 않음):
+내부 표현 생성 (출력에 원시 결과물 포함하지 않음):
 
 - **요구사항 목록**: 안정적인 키가 있는 각 기능 + 비기능 요구사항
 - **사용자 스토리/작업 목록**: 수락 기준이 있는 개별 사용자 작업
