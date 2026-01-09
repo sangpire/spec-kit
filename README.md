@@ -1,6 +1,7 @@
 <div align="center">
     <img src="./media/logo_large.webp" alt="Spec Kit Logo" width="200" height="200"/>
-    <h1>🌱 Spec Kit</h1>
+    <h1>CUSTOM&UNOFFICIAL Spec Kit</h1>
+    <h3><em>⚠️ (주의) 이 저장소는 개인적으로 수정해서 사용중인 저장소입니다. (주의) ⚠️</em></h3>
     <h3><em>Build high-quality software faster.</em></h3>
 </div>
 
