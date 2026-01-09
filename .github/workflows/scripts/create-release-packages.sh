@@ -40,10 +40,10 @@ rewrite_paths() {
 generate_commands() {
   local agent=$1 ext=$2 arg_format=$3 output_dir=$4 script_variant=$5
   mkdir -p "$output_dir"
-  for template in templates/commands/*.md; do
+  for template in templates/commands/*.ko.md; do
     [[ -f "$template" ]] || continue
     local name description script_command agent_script_command body
-    name=$(basename "$template" .md)
+    name=$(basename "$template" .ko.md)
     
     # Normalize line endings
     file_content=$(tr -d '\r' < "$template")
@@ -150,7 +150,19 @@ build_variant() {
     esac
   fi
   
-  [[ -d templates ]] && { mkdir -p "$SPEC_DIR/templates"; find templates -type f -not -path "templates/commands/*" -not -name "vscode-settings.json" -exec cp --parents {} "$SPEC_DIR"/ \; ; echo "Copied templates -> .specify/templates"; }
+  [[ -d templates ]] && {
+    mkdir -p "$SPEC_DIR/templates"
+    # Copy only *.ko.md files, renaming them to *.md (removing .ko suffix)
+    find templates -type f -name "*.ko.md" -not -path "templates/commands/*" | while read -r src; do
+      rel="${src#templates/}"
+      dest="$SPEC_DIR/templates/${rel%.ko.md}.md"
+      mkdir -p "$(dirname "$dest")"
+      cp "$src" "$dest"
+    done
+    # Copy non-md files (excluding vscode-settings.json)
+    find templates -type f -not -name "*.md" -not -name "vscode-settings.json" -not -path "templates/commands/*" -exec cp --parents {} "$SPEC_DIR"/ \; 2>/dev/null || true
+    echo "Copied templates -> .specify/templates"
+  }
   
   # NOTE: We substitute {ARGS} internally. Outward tokens differ intentionally:
   #   * Markdown/prompt (claude, copilot, cursor-agent, opencode): $ARGUMENTS

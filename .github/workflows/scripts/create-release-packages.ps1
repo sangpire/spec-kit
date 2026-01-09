@@ -78,10 +78,10 @@ function Generate-Commands {
     
     New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
     
-    $templates = Get-ChildItem -Path "templates/commands/*.md" -File -ErrorAction SilentlyContinue
+    $templates = Get-ChildItem -Path "templates/commands/*.ko.md" -File -ErrorAction SilentlyContinue
     
     foreach ($template in $templates) {
-        $name = [System.IO.Path]::GetFileNameWithoutExtension($template.Name)
+        $name = $template.Name -replace '\.ko\.md$', ''
         
         # Read file content and normalize line endings
         $fileContent = (Get-Content -Path $template.FullName -Raw) -replace "`r`n", "`n"
@@ -251,9 +251,24 @@ function Build-Variant {
     if (Test-Path "templates") {
         $templatesDestDir = Join-Path $specDir "templates"
         New-Item -ItemType Directory -Path $templatesDestDir -Force | Out-Null
-        
+
+        # Copy only *.ko.md files, renaming them to *.md (removing .ko suffix)
+        Get-ChildItem -Path "templates" -Recurse -File -Filter "*.ko.md" | Where-Object {
+            $_.FullName -notmatch 'templates[/\\]commands[/\\]'
+        } | ForEach-Object {
+            $relativePath = $_.FullName.Substring((Resolve-Path "templates").Path.Length + 1)
+            $destRelPath = $relativePath -replace '\.ko\.md$', '.md'
+            $destFile = Join-Path $templatesDestDir $destRelPath
+            $destFileDir = Split-Path $destFile -Parent
+            New-Item -ItemType Directory -Path $destFileDir -Force | Out-Null
+            Copy-Item -Path $_.FullName -Destination $destFile -Force
+        }
+
+        # Copy non-md files (excluding vscode-settings.json)
         Get-ChildItem -Path "templates" -Recurse -File | Where-Object {
-            $_.FullName -notmatch 'templates[/\\]commands[/\\]' -and $_.Name -ne 'vscode-settings.json'
+            $_.FullName -notmatch 'templates[/\\]commands[/\\]' -and
+            $_.Name -ne 'vscode-settings.json' -and
+            $_.Extension -ne '.md'
         } | ForEach-Object {
             $relativePath = $_.FullName.Substring((Resolve-Path "templates").Path.Length + 1)
             $destFile = Join-Path $templatesDestDir $relativePath
